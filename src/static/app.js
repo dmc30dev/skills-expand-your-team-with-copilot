@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize dark mode from localStorage
   function initializeDarkMode() {
-    if (!themeIcon || !themeText) {
+    if (!themeIcon || !themeText || !themeToggle) {
       return; // Exit if theme elements don't exist
     }
     
