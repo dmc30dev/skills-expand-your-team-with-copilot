@@ -703,7 +703,7 @@ footer {
 #theme-toggle {
   position: absolute;
   top: 10px;
-  right: 15px;
+  left: 15px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -721,16 +721,9 @@ footer {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Adjust user controls when toggle is present */
+/* User controls positioned on the right */
 #user-controls {
   position: absolute;
   top: 10px;
   right: 15px;
-}
-
-/* When both theme toggle and user controls exist, position them side by side */
-body:not(.dark-mode) #theme-toggle,
-body.dark-mode #theme-toggle {
-  right: auto;
-  left: 15px;
 }

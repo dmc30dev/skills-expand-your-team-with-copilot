@@ -32,33 +32,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize dark mode from localStorage
   function initializeDarkMode() {
-    const isDarkMode = localStorage.getItem("darkMode") === "true";
-    if (isDarkMode) {
-      document.body.classList.add("dark-mode");
-      updateThemeToggleUI(true);
+    if (!themeIcon || !themeText) {
+      return; // Exit if theme elements don't exist
+    }
+    
+    try {
+      const isDarkMode = localStorage.getItem("darkMode") === "true";
+      if (isDarkMode) {
+        document.body.classList.add("dark-mode");
+        updateThemeToggleUI(true);
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
     }
   }
 
   // Toggle dark mode
   function toggleDarkMode() {
     const isDarkMode = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("darkMode", isDarkMode);
+    try {
+      localStorage.setItem("darkMode", isDarkMode);
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
     updateThemeToggleUI(isDarkMode);
   }
 
   // Update theme toggle UI
   function updateThemeToggleUI(isDarkMode) {
+    if (!themeIcon || !themeText || !themeToggle) {
+      return; // Exit if theme elements don't exist
+    }
+    
     if (isDarkMode) {
       themeIcon.textContent = "☀️";
       themeText.textContent = "Light";
+      themeToggle.setAttribute("aria-label", "Switch to light mode");
     } else {
       themeIcon.textContent = "🌙";
       themeText.textContent = "Dark";
+      themeToggle.setAttribute("aria-label", "Switch to dark mode");
     }
   }
 
   // Event listener for theme toggle
-  themeToggle.addEventListener("click", toggleDarkMode);
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleDarkMode);
+  }
 
   // Activity categories with corresponding colors
   const activityTypes = {
