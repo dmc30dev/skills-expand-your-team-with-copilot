@@ -25,14 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
 
-  // Activity categories with corresponding colors
+  // Activity categories with corresponding colors and icons
   const activityTypes = {
-    sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
-    arts: { label: "Arts", color: "#f3e5f5", textColor: "#7b1fa2" },
-    academic: { label: "Academic", color: "#e3f2fd", textColor: "#1565c0" },
-    community: { label: "Community", color: "#fff3e0", textColor: "#e65100" },
-    technology: { label: "Technology", color: "#e8eaf6", textColor: "#3949ab" },
+    sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32", icon: "⚽" },
+    arts: { label: "Arts", color: "#f3e5f5", textColor: "#7b1fa2", icon: "🎨" },
+    academic: { label: "Academic", color: "#e3f2fd", textColor: "#1565c0", icon: "📚" },
+    community: { label: "Community", color: "#fff3e0", textColor: "#e65100", icon: "🤝" },
+    technology: { label: "Technology", color: "#e8eaf6", textColor: "#3949ab", icon: "💻" },
   };
+
+  // Order for displaying grouped categories
+  const groupOrder = ["sports", "arts", "academic", "community", "technology"];
 
   // State for activities and filters
   let allActivities = {};
@@ -489,15 +492,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayGroupedActivities(filteredActivities) {
     // Group activities by category
     const groupedActivities = {};
-    
-    // Category icons for visual appeal
-    const categoryIcons = {
-      sports: "⚽",
-      arts: "🎨",
-      academic: "📚",
-      community: "🤝",
-      technology: "💻"
-    };
 
     // Organize activities into groups
     Object.entries(filteredActivities).forEach(([name, details]) => {
@@ -510,9 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
       groupedActivities[activityType].push({ name, details });
     });
 
-    // Sort groups by the predefined order
-    const groupOrder = ["sports", "arts", "academic", "community", "technology"];
-    
+    // Display groups in predefined order
     groupOrder.forEach((category) => {
       if (groupedActivities[category] && groupedActivities[category].length > 0) {
         const activities = groupedActivities[category];
@@ -526,7 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const headerDiv = document.createElement("div");
         headerDiv.className = "activity-group-header";
         headerDiv.innerHTML = `
-          <span class="activity-group-icon">${categoryIcons[category]}</span>
+          <span class="activity-group-icon">${categoryInfo.icon}</span>
           <h3 class="activity-group-title">${categoryInfo.label}</h3>
           <span class="activity-group-count">${activities.length} ${activities.length === 1 ? 'activity' : 'activities'}</span>
         `;
@@ -724,10 +716,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Add event listener for group-by toggle
-  groupByToggle.addEventListener("change", () => {
-    groupByEnabled = groupByToggle.checked;
-    displayFilteredActivities();
-  });
+  if (groupByToggle) {
+    groupByToggle.addEventListener("change", () => {
+      groupByEnabled = groupByToggle.checked;
+      displayFilteredActivities();
+    });
+  }
 
   // Open registration modal
   function openRegistrationModal(activityName) {
