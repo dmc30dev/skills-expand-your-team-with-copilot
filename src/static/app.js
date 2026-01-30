@@ -25,6 +25,61 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
 
+  // Theme toggle elements
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+  const themeText = document.getElementById("theme-text");
+
+  // Initialize dark mode from localStorage
+  function initializeDarkMode() {
+    if (!themeIcon || !themeText || !themeToggle) {
+      return; // Exit if theme elements don't exist
+    }
+    
+    try {
+      const isDarkMode = localStorage.getItem("darkMode") === "true";
+      if (isDarkMode) {
+        document.body.classList.add("dark-mode");
+        updateThemeToggleUI(true);
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+    }
+  }
+
+  // Toggle dark mode
+  function toggleDarkMode() {
+    const isDarkMode = document.body.classList.toggle("dark-mode");
+    try {
+      localStorage.setItem("darkMode", isDarkMode);
+    } catch (error) {
+      console.error("Error saving to localStorage:", error);
+    }
+    updateThemeToggleUI(isDarkMode);
+  }
+
+  // Update theme toggle UI
+  function updateThemeToggleUI(isDarkMode) {
+    if (!themeIcon || !themeText || !themeToggle) {
+      return; // Exit if theme elements don't exist
+    }
+    
+    if (isDarkMode) {
+      themeIcon.textContent = "☀️";
+      themeText.textContent = "Light";
+      themeToggle.setAttribute("aria-label", "Switch to light mode");
+    } else {
+      themeIcon.textContent = "🌙";
+      themeText.textContent = "Dark";
+      themeToggle.setAttribute("aria-label", "Switch to dark mode");
+    }
+  }
+
+  // Event listener for theme toggle
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleDarkMode);
+  }
+
   // Activity categories with corresponding colors
   const activityTypes = {
     sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
@@ -862,6 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  initializeDarkMode();
   checkAuthentication();
   initializeFilters();
   fetchActivities();
