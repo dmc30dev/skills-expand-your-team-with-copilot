@@ -707,6 +707,13 @@ footer {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
+.share-btn:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
 .share-btn.share-twitter:hover {
   background-color: #1DA1F2;
   border-color: #1DA1F2;
@@ -725,6 +732,11 @@ footer {
 .share-btn.share-copy:hover {
   background-color: var(--primary);
   border-color: var(--primary);
+}
+
+.share-btn.copy-success {
+  background-color: var(--success);
+  border-color: var(--success);
 }
 
 .share-icon {

@@ -572,16 +572,16 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="social-sharing">
         <div class="share-label">Share:</div>
         <div class="share-buttons">
-          <button class="share-btn share-twitter" data-activity="${name}" title="Share on Twitter">
+          <button class="share-btn share-twitter" data-activity="${name}" title="Share on Twitter" aria-label="Share ${name} on Twitter">
             <span class="share-icon">🐦</span>
           </button>
-          <button class="share-btn share-facebook" data-activity="${name}" title="Share on Facebook">
+          <button class="share-btn share-facebook" data-activity="${name}" title="Share on Facebook" aria-label="Share ${name} on Facebook">
             <span class="share-icon">📘</span>
           </button>
-          <button class="share-btn share-email" data-activity="${name}" title="Share via Email">
+          <button class="share-btn share-email" data-activity="${name}" title="Share via Email" aria-label="Share ${name} via Email">
             <span class="share-icon">✉️</span>
           </button>
-          <button class="share-btn share-copy" data-activity="${name}" title="Copy Link">
+          <button class="share-btn share-copy" data-activity="${name}" title="Copy Link" aria-label="Copy link to ${name}">
             <span class="share-icon">🔗</span>
           </button>
         </div>
@@ -897,20 +897,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = `Check out ${activityName} at Mergington High School! ${details.description}`;
     const url = `${window.location.origin}${window.location.pathname}`;
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    window.open(twitterUrl, '_blank', 'width=550,height=420');
+    const popup = window.open(twitterUrl, '_blank', 'width=550,height=420');
+    
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      showMessage('Please allow popups to share on Twitter', 'error');
+    }
   }
 
   function shareOnFacebook(activityName, details) {
     const url = `${window.location.origin}${window.location.pathname}`;
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-    window.open(facebookUrl, '_blank', 'width=550,height=420');
+    const popup = window.open(facebookUrl, '_blank', 'width=550,height=420');
+    
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      showMessage('Please allow popups to share on Facebook', 'error');
+    }
   }
 
   function shareViaEmail(activityName, details) {
     const subject = `Join ${activityName} at Mergington High School`;
     const body = `Hi!\n\nI wanted to share this activity with you:\n\n${activityName}\n${details.description}\n\nSchedule: ${formatSchedule(details)}\n\nCheck it out at: ${window.location.origin}${window.location.pathname}\n\nBest regards!`;
     const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
+    
+    // Create a temporary anchor and click it to avoid navigation issues
+    const link = document.createElement('a');
+    link.href = mailtoUrl;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function copyActivityLink(activityName, buttonElement) {
@@ -948,7 +963,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.execCommand('copy');
       showCopyFeedback(buttonElement);
     } catch (err) {
-      showMessage('Failed to copy link', 'error');
+      showMessage('Unable to copy link. Please copy the URL from your browser address bar.', 'error');
     }
     
     document.body.removeChild(tempInput);
@@ -957,11 +972,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function showCopyFeedback(buttonElement) {
     const originalIcon = buttonElement.querySelector('.share-icon').textContent;
     buttonElement.querySelector('.share-icon').textContent = '✓';
-    buttonElement.style.backgroundColor = '#2e7d32';
+    buttonElement.classList.add('copy-success');
     
     setTimeout(() => {
       buttonElement.querySelector('.share-icon').textContent = originalIcon;
-      buttonElement.style.backgroundColor = '';
+      buttonElement.classList.remove('copy-success');
     }, 2000);
     
     showMessage('Link copied to clipboard!', 'success');
